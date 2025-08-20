@@ -1,5 +1,5 @@
 pipeline {
-  agent ec2-builder
+  agent { label 'ec2-builder' }
 
   environment {
     DOCKERHUB_REPO = 'lahiru97/turion-space-demo'
