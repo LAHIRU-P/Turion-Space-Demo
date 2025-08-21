@@ -18,6 +18,7 @@ pipeline {
       steps {
         dir('k8-cdk-deploy') {
           sh 'npm ci || npm install'
+          sh 'npm install @aws-cdk/lambda-layer-kubectl-v30'
         }
       }
     }
