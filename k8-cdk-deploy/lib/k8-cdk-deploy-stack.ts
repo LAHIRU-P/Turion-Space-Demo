@@ -28,6 +28,7 @@ export class K8CdkDeployStack extends cdk.Stack {
       vpc,
       defaultCapacity: 0,      
       endpointAccess: eks.EndpointAccess.PUBLIC_AND_PRIVATE,
+      authenticationMode: eks.AuthenticationMode.API_AND_CONFIG_MAP, 
       kubectlLayer: new KubectlV30Layer(this, 'KubectlV30Layer')
     });
 
