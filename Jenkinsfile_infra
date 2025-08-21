@@ -1,0 +1,67 @@
+pipeline {
+  agent { label 'ec2-builder' }  // same EC2 as docker build for simplicity
+
+  options { timestamps() }
+
+  environment {
+    CDK_DEFAULT_REGION = 'us-east-2'
+    // Secret Text credential whose value is the Jenkins agent role ARN (optional):
+    JENKINS_AGENT_ROLE_ARN = credentials('JENKINS_AGENT_ROLE_ARN_STRING')
+  }
+
+  stages {
+    stage('Checkout') {
+      steps { checkout scm }
+    }
+
+    stage('Install NPM Dependencies') {
+      steps {
+        dir('k8-cdk-deploy') {
+          sh 'npm ci || npm install'
+        }
+      }
+    }
+
+    stage('Run Synth') {
+      steps {
+        dir('k8-cdk-deploy') { 
+            sh 'npx cdk synth' 
+        }
+      }
+    }
+
+    stage('Diff Against Existing Stack') {
+      steps {
+        dir('k8-cdk-deploy') { 
+            sh 'npx cdk diff || true' 
+        }
+      }
+    }
+
+    stage('Deploy Stack') {
+      steps {
+        dir('k8-cdk-deploy') {
+          sh 'npx cdk deploy --require-approval never --outputs-file ../cdk-outputs.json'
+        }
+      }
+    }
+
+    stage('Check Created Cluster and Write Kubeconfig') {
+      steps {
+        //Extract name of deployed stack from the JSON generated above 
+        //Check cluster's name to match expected
+        //Update config for kubctl
+        //Check if nodes are up
+        sh '''
+          STACK_KEY=$(jq -r 'keys[0]' cdk-outputs.json)
+          CLUSTER_NAME=$(jq -r --arg k "$STACK_KEY" \
+            '.[$k].ClusterName // .[$k].TurionSpaceDemo' cdk-outputs.json)
+
+          echo "Resolved cluster: $CLUSTER_NAME in the region of $CDK_DEFAULT_REGION"
+          aws eks update-kubeconfig --region "$CDK_DEFAULT_REGION" --name "$CLUSTER_NAME"
+          kubectl get nodes || true
+        '''
+      }
+    }
+  }
+}

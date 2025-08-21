@@ -39,7 +39,7 @@ pipeline {
     }
 
     stage('Push To Dockerhub') {
-      when { not { branch 'PR-*' } } //Only push main branch builds to docker hub
+      when { not { branch 'PR-*' } } //Only push non PR branch builds to docker hub
       steps {
         withCredentials([usernamePassword(credentialsId: 'DockerHub-Credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
           sh '''
