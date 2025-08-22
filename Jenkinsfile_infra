@@ -5,8 +5,6 @@ pipeline {
 
   environment {
     CDK_DEFAULT_REGION = 'us-east-2'
-    // Secret Text credential whose value is the Jenkins agent role ARN (optional):
-    JENKINS_AGENT_ROLE_ARN = credentials('JENKINS_AGENT_ROLE_ARN_STRING')
   }
 
   stages {
@@ -32,8 +30,10 @@ pipeline {
 
     stage('Diff Against Existing Stack') {
       steps {
-        dir('k8-cdk-deploy') { 
-            sh 'npx cdk diff || true' 
+        withCredentials([string(credentialsId: 'JENKINS_AGENT_ROLE_ARN_STRING', variable: 'JENKINS_AGENT_ROLE_ARN')]) {
+          dir('k8-cdk-deploy') { 
+              sh 'npx cdk diff || true' 
+          }
         }
       }
     }
