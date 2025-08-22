@@ -6,6 +6,9 @@ metadata:
   labels:
     app.kubernetes.io/name: turion-space-demo
     app.kubernetes.io/part-of: turion-space-demo
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
 spec:
   type: LoadBalancer
   selector:
@@ -14,4 +17,5 @@ spec:
   ports:
     - name: http
       port: 80  
-      targetPort: 8080  
+      targetPort: 8080
+  externalTrafficPolicy: Cluster
