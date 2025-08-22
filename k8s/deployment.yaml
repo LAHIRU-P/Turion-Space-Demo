@@ -21,12 +21,12 @@ spec:
       containers:
         - name: turion-space-demo
           image: lahiru97/turion-space-demo:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
             - name: DEMO_MESSAGE
-              value: "Hello Please Hire Me :D "
+              value: "Hello From Lahiru"
           readinessProbe:
             httpGet: { 
               path: /healthz, port: 8080 
