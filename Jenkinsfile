@@ -92,7 +92,7 @@ pipeline {
         sh '''
           sleep 30
           echo "Service external hostname:"
-          kubectl -n "$NAMESPACE" get svc "$APP_NAME" -o jsonpath='{.status.loadBalancer.ingress[0].hostname}{"\n"}'
+          kubectl -n "$NAMESPACE" get svc "$APP_NAME" -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
         '''
       }
     }
