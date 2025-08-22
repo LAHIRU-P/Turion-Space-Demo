@@ -46,7 +46,7 @@ pipeline {
     }
 
     stage('Push To Dockerhub') {
-      when { branch 'main' }} //Only push main branch builds
+      when { branch 'main' } //Only push main branch builds
       steps {
         withCredentials([usernamePassword(credentialsId: 'DockerHub-Credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
           sh '''
