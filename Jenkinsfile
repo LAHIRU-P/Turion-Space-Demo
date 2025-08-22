@@ -71,11 +71,7 @@ pipeline {
         sh '''
           kubectl apply -f k8s/namespace.yaml
           kubectl apply -f k8s/service.yaml
-
-          # Check if deployment is not set and run if needed 
-          if ! kubectl -n "$NAMESPACE" get deploy "$APP_NAME" >/dev/null 2>&1; then
-            kubectl apply -f k8s/deployment.yaml
-          fi
+          kubectl apply -f k8s/deployment.yaml
         '''
       }
     }
