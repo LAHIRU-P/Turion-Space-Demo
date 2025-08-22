@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: turion-space-demo
-          image: lahiru97/turion-space-demo:<GIT_SHA>
+          image: lahiru97/turion-space-demo:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
